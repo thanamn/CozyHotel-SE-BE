@@ -107,7 +107,7 @@ exports.addBooking = async (req, res, next) => {
 //@desc     Update Booking
 //@route    PUT /api/v1/Bookings/:id
 //@access   Private
-exports.updateBooking = async (eq, res, next) => {
+exports.updateBooking = async (req, res, next) => {
     try {
         let booking = await Booking.findById(req.params.id);
 
