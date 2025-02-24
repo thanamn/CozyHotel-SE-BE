@@ -82,14 +82,15 @@ exports.addBooking = async (req, res, next) => {
 
         //Check for existed Booking
         const existedBookings = await Booking.find({ user: req.user.id });
-        
+
         //If the user is not an admin, they can only create 3 Booking.
         if (existedBookings.length >= 3 && req.user.role !== 'admin') {
             return res.status(400).json({
-                success: false, message: `The user with ID ${req.user.id} has already made 3 Bookings`});
+                success: false, message: `The user with ID ${req.user.id} has already made 3 Bookings`
+            });
         };
 
-        const Booking = await Booking.create(req.body);
+        const booking = await Booking.create(req.body);
 
         res.status(200).json({
             success: true,
