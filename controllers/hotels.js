@@ -138,7 +138,7 @@ exports.deleteHotel = async (req, res, next) => {
             return res.status(404).json({ success: false, message: `Hotel not foundwith id of ${req.params.id}` })
         }
         await Booking.deleteMany({ hotel: req.params.id });
-        await hotel.deleteOne({ _id: req.params.id });
+        await Hotel.deleteOne({ _id: req.params.id });
         
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
