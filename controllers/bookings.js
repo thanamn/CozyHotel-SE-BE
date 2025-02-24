@@ -44,18 +44,18 @@ exports.getBookings = async (req, res, next) => {
 //@access   Public
 exports.getBooking = async (req, res, next) => {
     try {
-        const Booking = await Booking.findById(req.params.id).populate({
+        const booking = await Booking.findById(req.params.id).populate({
             path: 'hotel',
             select: 'name description tel'
         })
 
-        if (!Booking) {
+        if (!booking) {
             return res.status(404).json({ success: false, message: ` No Booking with the id of ${req.params.id}` });
         }
 
         res.status(200).json({
             success: true,
-            data: Booking
+            data: booking
         });
 
     } catch (error) {
@@ -108,20 +108,20 @@ exports.addBooking = async (req, res, next) => {
 //@access   Private
 exports.updateBooking = async (eq, res, next) => {
     try {
-        let Booking = await Booking.findById(req.params.id);
+        let booking = await Booking.findById(req.params.id);
 
-        if (!Booking) {
+        if (!booking) {
             return res.status(404).json({ success: false, message: `No Booking with the id of ${req.params.id}` });
         }
 
-        Booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
+        booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         })
 
         res.status(200).json({
             success: true,
-            data: Booking
+            data: booking
         })
     } catch (error) {
         console.log(error);
@@ -137,13 +137,13 @@ exports.updateBooking = async (eq, res, next) => {
 //@access   Private
 exports.deleteBooking = async (req, res, next) => {
     try {
-        const Booking = await Booking.findById(req.params.id);
+        const booking = await Booking.findById(req.params.id);
 
-        if (!Booking) {
+        if (!booking) {
             return res.status(404).json({ success: false, message: `No Booking with the id of ${req.params.id}` });
         }
 
-        await Booking.deleteOne();
+        await booking.deleteOne();
 
         res.status(200).json({
             success: true,
