@@ -81,14 +81,15 @@ exports.getHotels = async (req, res, next) => {
 // @access  Public
 exports.getHotel = async (req, res, next) => {
     try {
-        const Hotel = await Hotel.findById(req.params.id);
+        const hotel = await Hotel.findById(req.params.id);
 
-        if (!Hotel) {
+        if (!hotel) {
             return res.status(400).json({ success: false });
         }
 
-        res.status(200).json({ success: true, data: Hotel });
+        res.status(200).json({ success: true, data: hotel });
     } catch (err) {
+        console.log(err)
         res.status(400).json({ success: false });
     }
 };
@@ -98,10 +99,10 @@ exports.getHotel = async (req, res, next) => {
 // @route   POST /api/v1/Hotels
 // @access  Private
 exports.createHotel = async (req, res, next) => {
-    const Hotel = await Hotel.create(req.body);
+    const hotel = await Hotel.create(req.body);
     res.status(201).json({
         success: true,
-        data: Hotel
+        data: hotel
     });
 };
 
@@ -110,16 +111,16 @@ exports.createHotel = async (req, res, next) => {
 // @access  Private
 exports.updateHotel = async (req, res, next) => {
     try {
-        const Hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body, {
+        const hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
 
-        if (!Hotel) {
+        if (!hotel) {
             return res.status(400).json({ success: false });
         }
 
-        res.status(200).json({ success: true, data: Hotel });
+        res.status(200).json({ success: true, data: hotel });
     } catch (err) {
         res.status(400).json({ success: false });
     }
@@ -131,13 +132,13 @@ exports.updateHotel = async (req, res, next) => {
 // @access  Private
 exports.deleteHotel = async (req, res, next) => {
     try {
-        const Hotel = await Hotel.findById(req.params.id);
+        const hotel = await Hotel.findById(req.params.id);
         
-        if (!Hotel) {
+        if (!hotel) {
             return res.status(404).json({ success: false, message: `Hotel not foundwith id of ${req.params.id}` })
         }
-        await Booking.deleteMany({ Hotel: req.params.id });
-        await Hotel.deleteOne({ _id: req.params.id });
+        await Booking.deleteMany({ hotel: req.params.id });
+        await hotel.deleteOne({ _id: req.params.id });
         
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
