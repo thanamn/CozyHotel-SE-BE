@@ -1,0 +1,4 @@
+# ignore all node_modules
+node_modules/*
+# ignore ocnfig file
+config/config.env
