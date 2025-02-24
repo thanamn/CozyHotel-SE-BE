@@ -1,7 +1,5 @@
 const { query } = require('express');
 const Hospital = require('../models/Hotel');
-
-
 //@desc     Get all hospitals
 //@routes   GET /api/v1/hospitals
 //@access   Public
