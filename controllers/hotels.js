@@ -1,6 +1,6 @@
 const { query } = require('express');
 const Hotel = require('../models/Hotel');
-
+const Booking = require('../models/Booking');
 //@desc     Get all hotels
 //@routes   GET /api/v1/hotels
 //@access   Public
@@ -142,6 +142,7 @@ exports.deleteHotel = async (req, res, next) => {
         
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
+        console.log(err.stack);
         res.status(400).json({ success: false });
     }
 };
