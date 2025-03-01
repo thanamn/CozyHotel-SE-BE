@@ -99,22 +99,25 @@ exports.getHotel = async (req, res, next) => {
 // @route   POST /api/v1/Hotels
 // @access  Private
 exports.createHotel = async (req, res, next) => {
-    const exist = await Hotel.findOne({
-        name: req.body.name
-    });
+    try {
+        const exist = await Hotel.findOne({ name: req.body.name });
 
-    if (exist) {
-        return res.status(409).json({
-            success: false,
-            message: "Hotel name already exist"
+        if (exist) {
+            return res.status(409).json({
+                success: false,
+                message: "Hotel name already exist"
+            });
+        }
+
+        const hotel = await Hotel.create(req.body);
+        res.status(201).json({
+            success: true,
+            data: hotel
         });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ success: false });
     }
-
-    const hotel = await Hotel.create(req.body);
-    res.status(201).json({
-        success: true,
-        data: hotel
-    });
 };
 
 // @desc    Update Hotel
