@@ -13,52 +13,34 @@ skinparam actor {
 
 rectangle "System Boundary" {
     usecase "Register" as register
-    usecase "Login" as login
-    usecase "Logout" as logout
-    usecase "View\nProfile" as viewProfile
+    ' usecase "Login" as login
+    ' usecase "Logout" as logout
+    ' usecase "View\nProfile" as viewProfile
     
+    usecase "Manage\nHotels" as manageHotels
     usecase "View\nHotels" as viewHotels
-    usecase "Search\nHotels" as searchHotels
-    usecase "Add\nHotel" as addHotel
-    usecase "Update\nHotel" as updateHotel
-    usecase "Delete\nHotel" as deleteHotel
     
-    usecase "Make\nBooking" as makeBooking
-    usecase "View\nBookings" as viewBookings
-    usecase "Update\nBooking" as updateBooking
-    usecase "Cancel\nBooking" as cancelBooking
-    usecase "View All\nBookings" as viewAllBookings
+    usecase "Manage \nBookings" as manageBookings
 }
 
 actor User
 actor Admin
 
 ' User relationships
-User -- register : register
-User -- login : login
-User -- viewProfile : access
-User -- logout : logout
-User -- viewHotels : browse
-User -- searchHotels : search
-User -- makeBooking : request
-User -- viewBookings : access
-User -- updateBooking : modify
-User -- cancelBooking : cancel
+User -- register
+' User -- login
+' User -- logout 
+User -- viewHotels
+User -- manageBookings
+' User -- viewProfile
 
 ' Admin relationshipsUser -- viewProfile : access
-logout -- Admin : logout
-viewHotels -- Admin : browse
-searchHotels -- Admin : search
-makeBooking -- Admin : request
-viewBookings -- Admin : access
-updateBooking -- Admin : modify
-cancelBooking -- Admin : cancel
-register -- Admin : register
-login -- Admin : login
-addHotel -- Admin : create
-updateHotel -- Admin : modify
-deleteHotel -- Admin : remove
-viewAllBookings -- Admin : access
+register -- Admin
+' login -- Admin
+' logout -- Admin
+manageBookings -- Admin
+manageHotels -- Admin
+' viewProfile -- Admin
 
 ' Position Admin to the right
 @enduml
