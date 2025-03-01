@@ -83,7 +83,9 @@ exports.getMe=async(req, res, next)=>{
     });
 }
 
-
+// @desc      Get current logged in user
+// @route     POST /api/v1/auth/me
+// @access    Private
 exports.logout= async(req,res,next) => {
     res.cookie('token','none' ,{
       expires: new Date(Date.now() + 10*1000),
