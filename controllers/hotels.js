@@ -1,6 +1,7 @@
 const { query } = require('express');
 const Hotel = require('../models/Hotel');
 const Booking = require('../models/Booking');
+const mongoose = require('mongoose');
 //@desc     Get all hotels
 //@routes   GET /api/v1/hotels
 //@access   Public
@@ -116,7 +117,13 @@ exports.createHotel = async (req, res, next) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ success: false });
+        if (err instanceof mongoose.Error.ValidationError) {
+            const errorMessages = Object.values(err.errors).map(error => error.message);
+            const message = errorMessages.join(', ');
+            res.status(400).json({ success: false, message: message });
+        } else {
+            res.status(500).json({ success: false, message: 'Internal Server Error' });
+        }
     }
 };
 
@@ -136,6 +143,7 @@ exports.updateHotel = async (req, res, next) => {
 
         res.status(200).json({ success: true, data: hotel });
     } catch (err) {
+        console.log(err);
         res.status(400).json({ success: false });
     }
 };
@@ -149,7 +157,7 @@ exports.deleteHotel = async (req, res, next) => {
         const hotel = await Hotel.findById(req.params.id);
 
         if (!hotel) {
-            return res.status(404).json({ success: false, message: `Hotel not foundwith id of ${req.params.id}` })
+            return res.status(404).json({ success: false, message: `Hotel not found with id of ${req.params.id}` })
         }
         await Booking.deleteMany({ hotel: req.params.id });
         await Hotel.deleteOne({ _id: req.params.id });
