@@ -94,7 +94,7 @@ exports.addBooking = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            data: Booking
+            data: booking
         })
     } catch (error) {
         console.log(error);
