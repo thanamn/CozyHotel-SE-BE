@@ -2,3 +2,7 @@
 node_modules/*
 # ignore ocnfig file
 config/config.env
+
+.puml
+
+out/*
