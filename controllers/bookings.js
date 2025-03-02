@@ -77,6 +77,14 @@ exports.addBooking = async (req, res, next) => {
             return res.status(404).json({ success: false, message: `No hotel with the id of ${req.params.hotelId}` });
         }
 
+         // Check if the user ID in the request matches the authenticated user and not an admin
+        if (req.body.user !== req.user.id && req.user.role != "admin") {
+            return res.status(403).json({ 
+                success: false, 
+                message: "You are not authorized to make this booking" 
+            });
+        }
+
         //add user Id to req.body
         req.body.user = req.user.id;
 
