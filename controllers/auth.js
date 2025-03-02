@@ -46,7 +46,7 @@ exports.register=async (req,res,next)=>{
 }
 
 //@desc     Login user
-//@route    POST /api/v1/auth/register
+//@route    POST /api/v1/auth/login
 //@acess    Public
 exports.login=async (req,res,next)=>{
     const {email, password} = req.body;
@@ -84,8 +84,8 @@ exports.getMe=async(req, res, next)=>{
     });
 }
 
-// @desc      Get current logged in user
-// @route     POST /api/v1/auth/me
+// @desc      Log current user out
+// @route     Get /api/v1/auth/logout
 // @access    Private
 exports.logout= async(req,res,next) => {
     res.cookie('token','none' ,{
