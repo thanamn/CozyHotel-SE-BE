@@ -28,14 +28,15 @@ const HotelSchema = new mongoose.Schema({
     tel: {
         type: String
     },
-    region: {
-        type: String,
-        required: [true, 'Please add a region']
-    },
     picture: {
         type: String,
         required: [true, 'Please add a picture URL']
+    },
+    description: {
+        type: String,
+        required: [true, 'Please add a description']
     }
+    
 }, {
     toJSON: { virtuals: true },
     toobject: { virtuals: true }
