@@ -6,3 +6,4 @@ config/config.env
 *.puml
 
 out/*
+.vercel
