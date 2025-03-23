@@ -31,6 +31,10 @@ const HotelSchema = new mongoose.Schema({
     region: {
         type: String,
         required: [true, 'Please add a region']
+    },
+    picture: {
+        type: String,
+        required: [true, 'Please add a picture URL']
     }
 }, {
     toJSON: { virtuals: true },
