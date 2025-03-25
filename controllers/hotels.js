@@ -6,74 +6,42 @@ const mongoose = require('mongoose');
 //@routes   GET /api/v1/hotels
 //@access   Public
 exports.getHotels = async (req, res, next) => {
-    let query;
-
-    const reqQuery = { ...req.query };
-
-    //Field to exclude
-    const remove = ['select', 'sort', 'page', 'limit'];
-
-    remove.forEach(param => delete reqQuery[param]);
-    console.log(reqQuery);
-
-    let queryStr = JSON.stringify(req.query);
-
-    //Create operators ($gt, $gte, etc)
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-
-    //finding resource
-    query = Hotel.find(JSON.parse(queryStr)).populate('bookings');
-
-    //Select fields
-    if (req.query.select) {
-        const fields = req.query.select.split(',').join(' ');
-        query = query.select(fields);
-    }
-
-    if (req.query.sort) {
-        const sortBy = req.query.sort.split(',').join(' ');
-        query = query.sort(sortBy);
-    } else {
-        query = query.sort('-createdAt');
-    }
-
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit) || 25;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const total = await Hotel.countDocuments();
-
-    query = query.skip(startIndex).limit(limit);
-
     try {
-        const Hotels = await query;
+        // Parse pagination parameters
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit) || 6; // Default to 6 to match frontend
+        const startIndex = (page - 1) * limit;
 
-        //Pagination result
-        const pagination = {};
+        // Get total count first
+        const total = await Hotel.countDocuments();
 
-        if (endIndex < total) {
-            pagination.next = {
-                page: page + 1,
-                limit
-            }
-        }
+        // Build the query
+        let query = Hotel.find();
 
-        if (startIndex < total) {
-            pagination.prev = {
-                page: page - 1,
-                limit
-            }
-        }
+        // Apply pagination
+        query = query.skip(startIndex).limit(limit);
 
+        // Execute query
+        const hotels = await query;
+
+        // Send response
         res.status(200).json({
             success: true,
-            count: Hotels.length,
-            pagination,
-            data: Hotels
-        })
-    }
-    catch (err) {
-        res.status(400).json({ success: false });
+            count: total, // Total number of hotels (not just in this page)
+            data: hotels,
+            pagination: {
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+                total
+            }
+        });
+    } catch (err) {
+        console.error('Error in getHotels:', err);
+        res.status(500).json({
+            success: false,
+            error: 'Server Error'
+        });
     }
 };
 
@@ -85,13 +53,22 @@ exports.getHotel = async (req, res, next) => {
         const hotel = await Hotel.findById(req.params.id);
 
         if (!hotel) {
-            return res.status(400).json({ success: false });
+            return res.status(404).json({
+                success: false,
+                error: 'Hotel not found'
+            });
         }
 
-        res.status(200).json({ success: true, data: hotel });
+        res.status(200).json({
+            success: true,
+            data: hotel
+        });
     } catch (err) {
-        console.log(err)
-        res.status(400).json({ success: false });
+        console.error('Error in getHotel:', err);
+        res.status(500).json({
+            success: false,
+            error: 'Server Error'
+        });
     }
 };
 
@@ -106,7 +83,7 @@ exports.createHotel = async (req, res, next) => {
         if (exist) {
             return res.status(409).json({
                 success: false,
-                message: "Hotel name already exist"
+                message: "Hotel name already exists"
             });
         }
 
@@ -116,13 +93,19 @@ exports.createHotel = async (req, res, next) => {
             data: hotel
         });
     } catch (err) {
-        console.log(err);
+        console.error('Error in createHotel:', err);
         if (err instanceof mongoose.Error.ValidationError) {
             const errorMessages = Object.values(err.errors).map(error => error.message);
             const message = errorMessages.join(', ');
-            res.status(400).json({ success: false, message: message });
+            res.status(400).json({
+                success: false,
+                message: message
+            });
         } else {
-            res.status(500).json({ success: false, message: 'Internal Server Error' });
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
         }
     }
 };
@@ -138,13 +121,31 @@ exports.updateHotel = async (req, res, next) => {
         });
 
         if (!hotel) {
-            return res.status(400).json({ success: false });
+            return res.status(404).json({
+                success: false,
+                error: 'Hotel not found'
+            });
         }
 
-        res.status(200).json({ success: true, data: hotel });
+        res.status(200).json({
+            success: true,
+            data: hotel
+        });
     } catch (err) {
-        console.log(err);
-        res.status(400).json({ success: false });
+        console.error('Error in updateHotel:', err);
+        if (err instanceof mongoose.Error.ValidationError) {
+            const errorMessages = Object.values(err.errors).map(error => error.message);
+            const message = errorMessages.join(', ');
+            res.status(400).json({
+                success: false,
+                message: message
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
+        }
     }
 };
 
@@ -157,15 +158,28 @@ exports.deleteHotel = async (req, res, next) => {
         const hotel = await Hotel.findById(req.params.id);
 
         if (!hotel) {
-            return res.status(404).json({ success: false, message: `Hotel not found with id of ${req.params.id}` })
+            return res.status(404).json({
+                success: false,
+                message: `Hotel not found with id of ${req.params.id}`
+            });
         }
+
+        // Delete all bookings associated with this hotel
         await Booking.deleteMany({ hotel: req.params.id });
+        
+        // Delete the hotel
         await Hotel.deleteOne({ _id: req.params.id });
 
-        res.status(200).json({ success: true, data: {} });
+        res.status(200).json({
+            success: true,
+            data: {}
+        });
     } catch (err) {
-        console.log(err.stack);
-        res.status(400).json({ success: false });
+        console.error('Error in deleteHotel:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error'
+        });
     }
 };
 
