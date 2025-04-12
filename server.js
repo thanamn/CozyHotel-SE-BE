@@ -49,8 +49,18 @@ app.use(hpp());
 app.use(cors());
 app.use(limiter);
 
+// Serve static files
+app.use('/swagger', express.static(path.join(__dirname, './swagger.yaml')));
+
 // Swagger UI
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { customCssUrl: CSS_URL }));
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(null, {
+    swaggerUrl: "/swagger",
+    customCssUrl: CSS_URL,
+  })
+);
 
 app.use("/api/v1/hotels", hotels);
 app.use("/api/v1/bookings", bookings);
