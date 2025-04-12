@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const roomTypeSchema = new Schema({
+const roomTypeSchema = new mongoose.Schema({
   hotelId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.ObjectId,
     ref: 'Hotel', // Assuming you have a 'Hotel' model
     required: true,
     index: true
@@ -51,7 +51,7 @@ const roomTypeSchema = new Schema({
   }],
   basePrice: {
     type: Number,
-    required: true,
+    required: false,
     min: 0
   },
   currency: {
