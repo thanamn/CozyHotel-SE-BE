@@ -53,9 +53,13 @@ app.use(limiter);
 app.use('/swagger', express.static(path.join(__dirname, './swagger.yaml')));
 
 // Swagger UI
-app.use("/docs", swaggerUi.serveFiles(swaggerDocument), swaggerUi.setup(swaggerDocument, {
-  customCssUrl: CSS_URL,
-}));
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    customCssUrl: CSS_URL,
+  })
+);
 
 app.use("/api/v1/hotels", hotels);
 app.use("/api/v1/bookings", bookings);

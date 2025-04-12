@@ -25,7 +25,6 @@
     "mongoose": "^8.10.1",
     "newman": "^6.2.1",
     "swagger-jsdoc": "^6.0.0",
-    "swagger-ui-dist": "^4.3.0",
     "swagger-ui-express": "^5.0.1",
     "xss-clean": "^0.1.4",
     "yamljs": "^0.3.0"
