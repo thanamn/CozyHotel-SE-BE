@@ -56,8 +56,7 @@ app.use('/swagger', express.static(path.join(__dirname, './swagger.yaml')));
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(null, {
-    swaggerUrl: "/swagger",
+  swaggerUi.setup(swaggerDocument, {
     customCssUrl: CSS_URL,
   })
 );
