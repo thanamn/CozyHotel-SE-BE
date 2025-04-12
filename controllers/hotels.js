@@ -1,7 +1,9 @@
 const { query } = require('express');
 const Hotel = require('../models/Hotel');
 const Booking = require('../models/Booking');
+const RoomType = require('../models/RoomType');
 const mongoose = require('mongoose');
+
 //@desc     Get all hotels
 //@routes   GET /api/v1/hotels
 //@access   Public
@@ -166,6 +168,7 @@ exports.deleteHotel = async (req, res, next) => {
 
         // Delete all bookings associated with this hotel
         await Booking.deleteMany({ hotel: req.params.id });
+        await RoomType.deleteMany({ hotel: req.params.id });
         
         // Delete the hotel
         await Hotel.deleteOne({ _id: req.params.id });
