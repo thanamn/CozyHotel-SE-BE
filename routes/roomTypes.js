@@ -4,7 +4,8 @@ const {
     getRoomType,
     createRoomType,
     updateRoomType,
-    deleteRoomType
+    deleteRoomType,
+    getRoomTypesByHotelId
 } = require('../controllers/roomTypes');
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.route('/:id')
     .get(getRoomType)
     .put(protect, authorize('admin'), updateRoomType)
     .delete(protect, authorize('admin'), deleteRoomType);
+
+router.route('/hotel/:hotelId').get(getRoomTypesByHotelId);
     
 module.exports = router;

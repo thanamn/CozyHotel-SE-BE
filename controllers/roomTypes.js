@@ -93,3 +93,31 @@ exports.deleteRoomType = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+// @desc    Get RoomTypes by Hotel ID
+// @route   GET /api/v1/roomtypes/hotel/:hotelId
+// @access  Public
+exports.getRoomTypesByHotelId = async (req, res) => {
+  try {
+    const roomTypes = await RoomType.find({ hotelId: req.params.hotelId });
+
+    if (!roomTypes || roomTypes.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No room types found for this hotel",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: roomTypes.length,
+      data: roomTypes,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
