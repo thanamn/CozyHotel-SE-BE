@@ -15,6 +15,9 @@ const path = require("path");
 // Load Swagger document
 const swaggerDocument = YAML.load(path.join(__dirname, "./swagger.yaml"));
 
+// Load swagger styles
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+
 // route files
 const hotels = require("./routes/hotels");
 const auth = require("./routes/auth");
@@ -47,7 +50,7 @@ app.use(cors());
 app.use(limiter);
 
 // Swagger UI
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { customCssUrl: CSS_URL }));
 
 app.use("/api/v1/hotels", hotels);
 app.use("/api/v1/bookings", bookings);
