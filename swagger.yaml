@@ -25,6 +25,8 @@ components:
           type: string
         email:
           type: string
+        tel:
+          type: string
         role:
           type: string
           enum: [user, admin]
@@ -36,9 +38,19 @@ components:
           type: string
         name:
           type: string
-        description:
+        address:
           type: string
-        location:
+        district:
+          type: string
+        province:
+          type: string
+        postalcode:
+          type: string
+        tel:
+          type: string
+        picture:
+          type: string
+        description:
           type: string
 
     RoomType:
@@ -46,35 +58,58 @@ components:
       properties:
         id:
           type: string
+        hotelId:
+          type: string
         name:
           type: string
         description:
           type: string
-        price:
+        capacity:
           type: number
-        hotelId:
+        bedType:
           type: string
+        size:
+          type: string
+        amenities:
+          type: array
+          items:
+            type: string
+        facilities:
+          type: array
+          items:
+            type: string
+        images:
+          type: array
+          items:
+            type: string
+        basePrice:
+          type: number
+        currency:
+          type: string
+        totalRooms:
+          type: number
+        nonAvailableRooms:
+          type: number
+        isAvailable:
+          type: boolean
 
     Booking:
       type: object
       properties:
         id:
           type: string
-        hotelId:
-          type: string
-        roomTypeId:
-          type: string
-        userId:
-          type: string
-        checkIn:
+        checkinDate:
           type: string
           format: date
-        checkOut:
+        checkoutDate:
           type: string
           format: date
-        status:
+        user:
           type: string
-          enum: [pending, confirmed, cancelled]
+        hotel:
+          type: string
+        roomType:
+          type: string
 
 paths:
   /auth/register:
@@ -93,7 +128,11 @@ paths:
                   type: string
                 email:
                   type: string
+                tel:
+                  type: string
                 password:
+                  type: string
+                role:
                   type: string
       responses:
         '201':
@@ -295,12 +334,12 @@ paths:
     get:
       tags:
         - Bookings
-      summary: Get bookings for a hotel
+      summary: Get bookings for a specific hotel
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: List of bookings
+          description: List of bookings for the hotel
           content:
             application/json:
               schema:
@@ -310,7 +349,7 @@ paths:
     post:
       tags:
         - Bookings
-      summary: Create new booking
+      summary: Create a booking for a specific hotel
       security:
         - bearerAuth: []
       requestBody:
@@ -323,13 +362,25 @@ paths:
         '201':
           description: Booking created successfully
 
-  /hotels/{hotelId}/bookings/{id}:
+  /bookings:
+    get:
+      tags:
+        - Bookings
+      summary: Get all bookings (admin or user-specific)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  /bookings/{id}:
     parameters:
-      - name: hotelId
-        in: path
-        required: true
-        schema:
-          type: string
       - name: id
         in: path
         required: true
@@ -351,7 +402,7 @@ paths:
     put:
       tags:
         - Bookings
-      summary: Update booking
+      summary: Update booking by ID
       security:
         - bearerAuth: []
       requestBody:
@@ -366,7 +417,7 @@ paths:
     delete:
       tags:
         - Bookings
-      summary: Delete booking
+      summary: Delete booking by ID
       security:
         - bearerAuth: []
       responses:
@@ -465,4 +516,4 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RoomType' 
+                  $ref: '#/components/schemas/RoomType'
