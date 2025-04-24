@@ -126,6 +126,26 @@ roomTypeSchema.statics.checkAvailability = async function(roomTypeId, checkInDat
     throw new Error('Room type not found');
   }
 
+  // If room type is under maintenance, return not available
+  if (!roomType.isAvailable) {
+    return {
+      roomTypeId,
+      totalRooms: roomType.totalRooms,
+      bookedRooms: roomType.totalRooms, // All rooms are considered booked when under maintenance
+      availableRooms: 0,
+      isAvailable: false,
+      roomTypeDetails: {
+        name: roomType.name,
+        capacity: roomType.capacity,
+        bedType: roomType.bedType,
+        basePrice: roomType.basePrice,
+        currency: roomType.currency
+      },
+      dailyBookings: {},
+      status: 'under_maintenance'
+    };
+  }
+
   // Convert string dates to Date objects
   const startDate = new Date(checkInDate);
   const endDate = new Date(checkOutDate);
@@ -178,7 +198,8 @@ roomTypeSchema.statics.checkAvailability = async function(roomTypeId, checkInDat
       basePrice: roomType.basePrice,
       currency: roomType.currency
     },
-    dailyBookings: Object.fromEntries(bookingsByDay)
+    dailyBookings: Object.fromEntries(bookingsByDay),
+    status: availableRooms > 0 ? 'available' : 'fully_booked'
   };
 };
 
