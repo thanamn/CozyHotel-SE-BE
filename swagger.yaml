@@ -29,7 +29,7 @@ components:
           type: string
         role:
           type: string
-          enum: [user, admin]
+          enum: [user, admin, manager]
 
     Hotel:
       type: object
@@ -181,6 +181,10 @@ paths:
                   type: string
                 role:
                   type: string
+                managedHotels:
+                  type: array
+                  items:
+                    type: string
       responses:
         '201':
           description: User registered successfully
