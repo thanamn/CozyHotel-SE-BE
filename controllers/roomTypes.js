@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const RoomType = require("../models/RoomType");
 const Booking = require("../models/Booking");
 // @desc    Get all RoomTypes
@@ -39,8 +40,20 @@ exports.createRoomType = async (req, res) => {
     const roomType = await RoomType.create(req.body);
     res.status(201).json({ success: true, data: roomType });
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ success: false, message: "Invalid data" });
+    if (err instanceof mongoose.Error.ValidationError) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Validation error",
+        errors: Object.values(err.errors).map(e => e.message)
+      });
+    }
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Room type name must be unique within the same hotel"
+      });
+    }
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 

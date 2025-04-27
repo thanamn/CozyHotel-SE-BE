@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require("../models/User");
 
 //Get token from model, create cookie andsend response
@@ -41,13 +42,16 @@ exports.register = async (req, res, next) => {
       role,
     });
 
-    // const token=user.getSignedJwtToken();
-    // res.status(200).json({success:true, token});
-
     sendTokenResponse(user, 200, res);
-  } catch (error) {
-    res.status(400).json({ success: false });
-    console.log(error.stack);
+  } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Validation error",
+        errors: Object.values(err.errors).map(e => e.message)
+      });
+    }
+    res.status(400).json({ success: false, message: "Registration failed" });
   }
 };
 
