@@ -31,7 +31,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 //@acess    Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, tel, password, role } = req.body;
+    const { name, email, tel, password, role, managedHotels } = req.body;
 
     // create user to the database
     const user = await User.create({
@@ -40,6 +40,7 @@ exports.register = async (req, res, next) => {
       tel,
       password,
       role,
+      managedHotels: managedHotels || [],
     });
 
     sendTokenResponse(user, 200, res);
