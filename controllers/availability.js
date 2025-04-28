@@ -121,8 +121,7 @@ exports.getAvailableHotels = async (req, res) => {
 
       const roomTypeAvailability = await Promise.all(roomTypeAvailabilityPromises);
       
-      // Check if any room type is Activated
-      const hasAvailableRooms = roomTypeAvailability.some(result => result.isActivated);
+      const hasAvailableRooms = roomTypeAvailability.some(result => result.status == "available");
 
       return {
         hotelId: hotel._id,
