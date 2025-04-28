@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const BookingSchema = new mongoose.Schema({
   checkinDate: {
     type: Date,
-    require: true,
+    required: true,
   },
   checkoutDate: {
     type: Date,
-    require: true,
+    required: true,
   },
   user: {
     type: mongoose.Schema.ObjectId,
