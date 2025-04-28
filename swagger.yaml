@@ -521,3 +521,260 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RoomType'
+
+  /manager/hotels:
+    get:
+      tags:
+        - Manager
+      summary: Get all hotels managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of managed hotels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hotel'
+
+  /manager/hotels/{hotelId}:
+    parameters:
+      - name: hotelId
+        in: path
+        required: true
+        schema:
+          type: string
+    
+    put:
+      tags:
+        - Manager
+      summary: Update hotel details managed by the current manager
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+      responses:
+        '200':
+          description: Hotel updated successfully
+
+  /manager/hotels/{hotelId}/bookings:
+    parameters:
+      - name: hotelId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Manager
+      summary: Get all bookings for a specific hotel managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of bookings for the hotel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  /manager/bookings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - Manager
+      summary: Update a booking managed by the current manager
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Booking updated successfully
+    delete:
+      tags:
+        - Manager
+      summary: Delete a booking managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Booking deleted successfully
+
+  /manager/hotels/{hotelId}/roomtypes:
+    parameters:
+      - name: hotelId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Manager
+      summary: Get all room types for a specific hotel managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of room types for the hotel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomType'
+    post:
+      tags:
+        - Manager
+      summary: Create a new room type for a specific hotel managed by the current manager
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomType'
+      responses:
+        '201':
+          description: Room type created successfully
+
+  /manager/roomtypes/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - Manager
+      summary: Update a room type managed by the current manager
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomType'
+      responses:
+        '200':
+          description: Room type updated successfully
+    delete:
+      tags:
+        - Manager
+      summary: Delete a room type managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Room type deleted successfully
+
+  /availability/room-types:
+    get:
+      tags:
+        - Availability
+      summary: Get available room types for a specific hotel and date range
+      parameters:
+        - name: hotelId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: checkInDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: checkOutDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of available room types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      hotelId:
+                        type: string
+                      checkInDate:
+                        type: string
+                        format: date
+                      checkOutDate:
+                        type: string
+                        format: date
+                      availableRoomTypes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/RoomAvailability'
+
+  /availability/hotels:
+    get:
+      tags:
+        - Availability
+      summary: Get all hotels with available rooms for a specific date range
+      parameters:
+        - name: checkInDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: checkOutDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: List of hotels with available rooms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      checkInDate:
+                        type: string
+                        format: date
+                      checkOutDate:
+                        type: string
+                        format: date
+                      availableHotels:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HotelAvailability'

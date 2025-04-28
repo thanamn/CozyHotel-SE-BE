@@ -167,15 +167,23 @@ exports.deleteBooking = async (req, res, next) => {
             return res.status(404).json({ success: false, message: `No Booking with the id of ${req.params.id}` });
         }
 
+        // Check if the user is the owner of the booking or an admin
+        if (booking.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: 'You are not authorized to delete this booking'
+            });
+        }
+
         await booking.deleteOne();
 
         res.status(200).json({
             success: true,
             data: {}
-        })
+        });
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ success: false, message: "Cannot delete Booking" })
+        return res.status(500).json({ success: false, message: "Cannot delete Booking" });
     }
 };

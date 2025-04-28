@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const Booking = require('../../../models/Booking');
 const User = require('../../../models/User');
 const Hotel = require('../../../models/Hotel');
 const RoomType = require('../../../models/RoomType');
+const { connect, clearDatabase, closeDatabase } = require('../../utils/dbHandler');
 
 describe('Booking Model', () => {
-  let mongod;
   let testUser, testHotel, testRoomType;
 
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    await mongoose.connect(uri);
+  beforeAll(async () => await connect());
+  
+  afterEach(async () => await clearDatabase());
+  
+  afterAll(async () => await closeDatabase());
 
+  beforeEach(async () => {
     // Create test data
     testUser = await User.create({
       name: 'Test User',
@@ -42,15 +43,6 @@ describe('Booking Model', () => {
       basePrice: 1000,
       currency: 'THB'
     });
-  });
-
-  afterAll(async () => {
-    await mongoose.disconnect();
-    await mongod.stop();
-  });
-
-  afterEach(async () => {
-    await Booking.deleteMany();
   });
 
   describe('Validation', () => {

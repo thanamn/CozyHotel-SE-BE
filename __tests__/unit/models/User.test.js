@@ -1,29 +1,16 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const User = require('../../../models/User');
 const jwt = require('jsonwebtoken');
+const { connect, clearDatabase, closeDatabase } = require('../../utils/dbHandler');
 
 // Mock environment variables for JWT
 process.env.JWT_SECRET = 'test-secret';
 process.env.JWT_EXPIRE = '1h';
 
 describe('User Model', () => {
-  let mongod;
-
-  beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    await mongoose.connect(uri);
-  });
-
-  afterAll(async () => {
-    await mongoose.disconnect();
-    await mongod.stop();
-  });
-
-  afterEach(async () => {
-    await User.deleteMany();
-  });
+  beforeAll(async () => await connect());
+  afterEach(async () => await clearDatabase());
+  afterAll(async () => await closeDatabase());
 
   describe('Validation', () => {
     it('should require name', async () => {
