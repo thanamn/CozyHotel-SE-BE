@@ -129,7 +129,7 @@ exports.getAvailableHotels = async (req, res) => {
         hotelName: hotel.name,
         hotelAddress: hotel.address,
         hasAvailableRooms,
-        availableRoomTypes: roomTypeAvailability.filter(result => result.isActivated)
+        availableRoomTypes: roomTypeAvailability.filter(result => result.status == "available")
       };
     });
 
