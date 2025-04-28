@@ -98,7 +98,7 @@ const roomTypeSchema = new mongoose.Schema({
     min: 0,
     integer: true,
   },
-  isAvailable: {
+  isActivated: {
     type: Boolean,
     default: true,
   },
@@ -126,14 +126,14 @@ roomTypeSchema.statics.checkAvailability = async function(roomTypeId, checkInDat
     throw new Error('Room type not found');
   }
 
-  // If room type is under maintenance, return not available
-  if (!roomType.isAvailable) {
+  // If room type is under maintenance, return under_maintenance
+  if (!roomType.isActivated) {
     return {
       roomTypeId,
       totalRooms: roomType.totalRooms,
       bookedRooms: roomType.totalRooms, // All rooms are considered booked when under maintenance
       availableRooms: 0,
-      isAvailable: false,
+      isActivated: false,
       roomTypeDetails: {
         name: roomType.name,
         capacity: roomType.capacity,
@@ -190,7 +190,7 @@ roomTypeSchema.statics.checkAvailability = async function(roomTypeId, checkInDat
     totalRooms: roomType.totalRooms,
     bookedRooms: maxBookedRooms,
     availableRooms,
-    isAvailable: availableRooms > 0,
+    isActivated: roomType.isActivated,
     roomTypeDetails: {
       name: roomType.name,
       capacity: roomType.capacity,

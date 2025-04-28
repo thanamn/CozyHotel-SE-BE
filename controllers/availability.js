@@ -49,8 +49,8 @@ exports.getAvailableRoomTypes = async (req, res) => {
 
     const availabilityResults = await Promise.all(availabilityPromises);
 
-    // Filter out unavailable room types
-    const availableRoomTypes = availabilityResults.filter(result => result.isAvailable);
+    // Filter out Deactivated room types
+    const availableRoomTypes = availabilityResults.filter(result => result.isActivated);
 
     res.status(200).json({
       success: true,
@@ -121,15 +121,15 @@ exports.getAvailableHotels = async (req, res) => {
 
       const roomTypeAvailability = await Promise.all(roomTypeAvailabilityPromises);
       
-      // Check if any room type is available
-      const hasAvailableRooms = roomTypeAvailability.some(result => result.isAvailable);
+      // Check if any room type is Activated
+      const hasAvailableRooms = roomTypeAvailability.some(result => result.isActivated);
 
       return {
         hotelId: hotel._id,
         hotelName: hotel.name,
         hotelAddress: hotel.address,
         hasAvailableRooms,
-        availableRoomTypes: roomTypeAvailability.filter(result => result.isAvailable)
+        availableRoomTypes: roomTypeAvailability.filter(result => result.isActivated)
       };
     });
 
