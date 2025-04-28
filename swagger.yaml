@@ -585,46 +585,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Hotel'
-    post:
-      tags:
-        - Manager
-      summary: Create a new hotel
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Hotel'
-      responses:
-        '201':
-          description: Hotel created successfully
 
-  /manager/hotels/{id}:
+  /manager/hotels/{hotelId}:
     parameters:
-      - name: id
+      - name: hotelId
         in: path
         required: true
         schema:
           type: string
-    get:
-      tags:
-        - Manager
-      summary: Get hotel details
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Hotel details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Hotel'
+    
     put:
       tags:
         - Manager
-      summary: Update hotel details
+      summary: Update hotel details managed by the current manager
       security:
         - bearerAuth: []
       requestBody:
@@ -636,26 +609,78 @@ paths:
       responses:
         '200':
           description: Hotel updated successfully
-    delete:
-      tags:
-        - Manager
-      summary: Delete hotel
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Hotel deleted successfully
 
-  /manager/roomtypes:
+  /manager/hotels/{hotelId}/bookings:
+    parameters:
+      - name: hotelId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags:
         - Manager
-      summary: Get all room types for managed hotels
+      summary: Get all bookings for a specific hotel managed by the current manager
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: List of room types
+          description: List of bookings for the hotel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+
+  /manager/bookings/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - Manager
+      summary: Update a booking managed by the current manager
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Booking updated successfully
+    delete:
+      tags:
+        - Manager
+      summary: Delete a booking managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Booking deleted successfully
+
+  /manager/hotels/{hotelId}/roomtypes:
+    parameters:
+      - name: hotelId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Manager
+      summary: Get all room types for a specific hotel managed by the current manager
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of room types for the hotel
           content:
             application/json:
               schema:
@@ -665,7 +690,7 @@ paths:
     post:
       tags:
         - Manager
-      summary: Create a new room type
+      summary: Create a new room type for a specific hotel managed by the current manager
       security:
         - bearerAuth: []
       requestBody:
@@ -685,23 +710,10 @@ paths:
         required: true
         schema:
           type: string
-    get:
-      tags:
-        - Manager
-      summary: Get room type details
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Room type details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RoomType'
     put:
       tags:
         - Manager
-      summary: Update room type details
+      summary: Update a room type managed by the current manager
       security:
         - bearerAuth: []
       requestBody:
@@ -716,7 +728,7 @@ paths:
     delete:
       tags:
         - Manager
-      summary: Delete room type
+      summary: Delete a room type managed by the current manager
       security:
         - bearerAuth: []
       responses:
