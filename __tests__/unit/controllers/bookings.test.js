@@ -293,7 +293,7 @@ describe('Bookings Controller', () => {
       await deleteBooking(mockReq, mockRes);
       
       // Should return 403 Forbidden for unauthorized access
-      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.status).toHaveBeenCalledWith(403);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         message: expect.stringContaining('not authorized')
